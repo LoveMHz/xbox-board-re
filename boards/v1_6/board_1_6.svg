@@ -59,7 +59,7 @@
      style="display:inline"
      sodipodi:insensitive="true">
     <image
-       sodipodi:absref="/home/dustin/Xbox/Board/board_1_6_bottom.png"
+       sodipodi:absref="./board_1_6_bottom.png"
        xlink:href="board_1_6_bottom.png"
        width="2222.5"
        height="2470.1499"
@@ -75,7 +75,7 @@
      style="display:none"
      sodipodi:insensitive="true">
     <image
-       sodipodi:absref="/home/dustin/Xbox/Board/board_1_6_top.png"
+       sodipodi:absref="./board_1_6_top.png"
        xlink:href="board_1_6_top.png"
        width="2222.5"
        height="2470.1499"
