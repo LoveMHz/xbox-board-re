@@ -42,7 +42,7 @@ def process_image_layer(xml, layer, new_layer):
 			# Check if field has a value
 			if not image.getAttribute(allowed_attr):
 				continue
-		
+
 			new_image.setAttribute(allowed_attr, image.getAttribute(allowed_attr))
 
 		# Add UUID if needed
@@ -69,7 +69,7 @@ def process_zones_layer(xml, layer, new_layer):
 			# Check if field has a value
 			if not zone.getAttribute(allowed_attr):
 				continue
-		
+
 			new_zone.setAttribute(allowed_attr, zone.getAttribute(allowed_attr))
 
 		# TODO: Remove transforms
@@ -105,7 +105,7 @@ def process_traces_layer(xml, layer, new_layer):
 			# Check if field has a value
 			if not trace.getAttribute(allowed_attr):
 				continue
-		
+
 			new_trace.setAttribute(allowed_attr, trace.getAttribute(allowed_attr))
 
 		# Assign default trace style
@@ -155,7 +155,7 @@ def main(argv):
 		# Check if field has a value
 		if not input_svg.getAttribute(svg_allowed_attr):
 			continue
-	
+
 		clean_svg.setAttribute(svg_allowed_attr, input_svg.getAttribute(svg_allowed_attr))
 
 	# Add back XML namespcaes
@@ -184,7 +184,7 @@ def main(argv):
 			# Check if field has a value
 			if not layer.getAttribute(svg_allowed_attr):
 				continue
-		
+
 			new_layer.setAttribute(svg_allowed_attr, layer.getAttribute(svg_allowed_attr))
 
 		# Add UUID if needed
