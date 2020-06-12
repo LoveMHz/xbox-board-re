@@ -11,9 +11,29 @@ default_layer_attrs = {
 	'style': 'display:inline'
 }
 
-default_trace_style = 'fill:none;stroke:#ff0000;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1'
-default_zone_style = 'opacity:0.5;fill:#00ffff;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1'
+default_trace_style = {
+	'fill': 'none', 
+	'stroke': '#ff0000', 
+	'stroke-width': '1.25', 
+	'stroke-linecap': 'round', 
+	'stroke-linejoin': 'round', 
+	'stroke-miterlimit': '4', 
+	'stroke-dasharray': 'none', 
+	'stroke-opacity': '1'
+}
+default_zone_style = {
+	'opacity': '0.5', 
+	'fill': '#00ffff', 
+	'stroke': '#000000', 
+	'stroke-width': '0.99999994px', 
+	'stroke-linecap': 'butt', 
+	'stroke-linejoin': 'miter', 
+	'stroke-opacity': '1'
+}
 default_zone_label = 'Copper Fill'
+
+def dict_to_style(dict):
+	return ';'.join("{}:{}".format(key,val) for (key,val) in dict.items())
 
 def sort_element_attr(element):
 	attributes = element.attributes.items()
@@ -75,7 +95,7 @@ def process_zones_layer(xml, layer, new_layer):
 		# TODO: Remove transforms
 
 		# Assign default zone style
-		new_zone.setAttribute('style', default_zone_style)
+		new_zone.setAttribute('style', dict_to_style(default_zone_style))
 
 		# Assign default zone label
 		if not new_zone.getAttribute('inkscape:label'):
@@ -109,7 +129,7 @@ def process_traces_layer(xml, layer, new_layer):
 			new_trace.setAttribute(allowed_attr, trace.getAttribute(allowed_attr))
 
 		# Assign default trace style
-		new_trace.setAttribute('style', default_trace_style)
+		new_trace.setAttribute('style', dict_to_style(default_trace_style))
 
 		# Add UUID if needed
 		if not new_trace.getAttribute('pcbre:uuid'):
