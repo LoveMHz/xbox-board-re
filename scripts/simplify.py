@@ -174,7 +174,7 @@ def main(argv):
 
 		if not element.getAttribute('pcbre:uuid'):
 			print('WARNING: No UUID assigned to layer. Skipping layer', element.getAttribute('inkscape:label'))
-			continue
+			#continue
 
 		layers += [element]
 
@@ -243,7 +243,7 @@ def main(argv):
 	clean_xml.appendChild(clean_svg)
 
 	# Write out simplified SVG
-	open(argv[0], 'wb').write(clean_xml.toprettyxml('\t', '\n', 'UTF-8'))
+	open(argv[1], 'wb').write(clean_xml.toprettyxml('\t', '\n', 'UTF-8'))
 
 if __name__ == '__main__':
 	main(sys.argv[1:])
