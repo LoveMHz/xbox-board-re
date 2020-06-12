@@ -8,7 +8,6 @@ from xml.dom import minidom
 default_layer_attrs = {
 	'inkscape:groupmode': 'layer',
 	'sodipodi': 'true', # Force layer locked by default
-	'style': 'display:inline'
 }
 
 default_trace_style = {
@@ -30,6 +29,10 @@ default_zone_style = {
 	'stroke-linejoin': 'miter', 
 	'stroke-opacity': '1'
 }
+default_image_style = {
+	'style': 'display:inline'
+}
+
 default_zone_label = 'Copper Fill'
 
 def dict_to_style(dict):
@@ -64,6 +67,9 @@ def process_image_layer(xml, layer, new_layer):
 				continue
 
 			new_image.setAttribute(allowed_attr, image.getAttribute(allowed_attr))
+
+		# Assign default image style
+		new_image.setAttribute('style', dict_to_style(default_image_style))
 
 		# Add UUID if needed
 		if not new_image.getAttribute('pcbre:uuid'):
