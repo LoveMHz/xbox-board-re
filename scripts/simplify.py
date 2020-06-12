@@ -56,7 +56,7 @@ def sort_element_attr(element):
 def process_image_layer(xml, layer, new_layer):
 	images = layer.getElementsByTagName('image')
 
-	image_allowed_attrs = ['xlink:href', 'y', 'x', 'preserveAspectRatio', 'height', 'width']
+	image_allowed_attrs = ['x', 'y', 'width', 'height', 'xlink:href', 'preserveAspectRatio']
 	for image in images:
 		new_image = xml.createElement('image')
 
