@@ -5,6 +5,16 @@ import getopt
 import uuid
 from xml.dom import minidom
 
+default_svg_attrs = {
+	'xmlns:cc': 'http://creativecommons.org/ns#',
+	'xmlns:dc': 'http://purl.org/dc/elements/1.1/',
+	'xmlns:inkscape': 'http://www.inkscape.org/namespaces/inkscape',
+	'xmlns:pcbre': 'https://github.com/LoveMHz/xbox-board-re/namespaces/inkscape',
+	'xmlns:rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+	'xmlns:sodipodi': 'http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd',
+	'xmlns:svg': 'http://www.w3.org/2000/svg',
+	'xmlns:xlink': 'http://www.w3.org/1999/xlink'
+}
 default_layer_attrs = {
 	'inkscape:groupmode': 'layer',
 	'sodipodi': 'true', # Force layer locked by default
@@ -184,11 +194,9 @@ def main(argv):
 
 		clean_svg.setAttribute(svg_allowed_attr, input_svg.getAttribute(svg_allowed_attr))
 
-	# Add back XML namespcaes
-	input_svg_attributes = list(input_svg.attributes.keys()) if input_svg.attributes else []
-	for attribute in input_svg_attributes:
-		if attribute.startswith('xmlns:'):
-			clean_svg.setAttribute(attribute, input_svg.getAttribute(attribute))
+	# Set SVG default attributes
+	for attribute, value in default_svg_attrs.items():
+		clean_svg.setAttribute(attribute, value)
 
 	# Sort attributes
 	sort_element_attr(clean_svg)
@@ -235,7 +243,7 @@ def main(argv):
 	clean_xml.appendChild(clean_svg)
 
 	# Write out simplified SVG
-	open('./clean.svg', 'wb').write(clean_xml.toprettyxml('\t', '\n', 'UTF-8'))
+	open(argv[0], 'wb').write(clean_xml.toprettyxml('\t', '\n', 'UTF-8'))
 
 if __name__ == '__main__':
 	main(sys.argv[1:])
