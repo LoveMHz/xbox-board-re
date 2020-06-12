@@ -10,9 +10,9 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="2222.5mm"
-   height="2470.1499mm"
-   viewBox="0 0 2222.5 2470.1499"
+   width="179.23387mm"
+   height="199.20564mm"
+   viewBox="0 0 2222.5 2470.1501"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
@@ -26,9 +26,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.12374369"
-     inkscape:cx="3304.5262"
-     inkscape:cy="5215.3955"
+     inkscape:zoom="0.98994952"
+     inkscape:cx="318.28176"
+     inkscape:cy="123.40035"
      inkscape:document-units="mm"
      inkscape:current-layer="layer6"
      showgrid="false"
@@ -54,7 +54,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -68,12 +68,12 @@
     <image
        sodipodi:absref="/home/dustin/Xbox/xbox-board-re/boards/v1_6/board_1_6_bottom.png"
        xlink:href="board_1_6_bottom.png"
-       y="-1086.2416"
-       x="-1005.4167"
-       id="image6153"
-       preserveAspectRatio="none"
+       width="2222.5"
        height="2470.1499"
-       width="2222.5" />
+       preserveAspectRatio="none"
+       id="image6153"
+       x="-1005.4167"
+       y="-1086.2416" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -85,12 +85,12 @@
     <image
        sodipodi:absref="/home/dustin/Xbox/xbox-board-re/boards/v1_6/board_1_6_top.png"
        xlink:href="board_1_6_top.png"
-       y="-1086.2416"
-       x="-1005.4167"
-       id="image6164"
-       preserveAspectRatio="none"
+       width="2222.5"
        height="2470.1499"
-       width="2222.5" />
+       preserveAspectRatio="none"
+       id="image6164"
+       x="-1005.4167"
+       y="-1086.2416" />
   </g>
   <g
      inkscape:groupmode="layer"
