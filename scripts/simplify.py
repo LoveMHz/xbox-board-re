@@ -35,7 +35,7 @@ def process_image_layer(xml, layer, new_layer):
 
 	image_allowed_attrs = ['xlink:href', 'y', 'x', 'preserveAspectRatio', 'height', 'width']
 	for image in images:
-		new_image = xml.createElement('path')
+		new_image = xml.createElement('image')
 
 		# Recreate each allowed attribute in the newly created element
 		for allowed_attr in image_allowed_attrs:
