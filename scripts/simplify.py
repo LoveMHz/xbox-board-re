@@ -105,7 +105,7 @@ def format_group_elements(xml, layer, new_layer, ruleset):
 			new_element.setAttribute(allowed_attr, element.getAttribute(allowed_attr))
 
 		# Assign default trace style
-		new_element.setAttribute('style', dict_to_style(default_trace_style))
+		new_element.setAttribute('style', dict_to_style(ruleset['default_styles']))
 
 		# Add UUID if needed
 		if not new_element.getAttribute('id'):
