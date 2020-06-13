@@ -6,19 +6,10 @@ import uuid
 from xml.dom import minidom
 
 default_svg_attrs = {
-	'xmlns:cc': 'http://creativecommons.org/ns#',
-	'xmlns:dc': 'http://purl.org/dc/elements/1.1/',
-	'xmlns:inkscape': 'http://www.inkscape.org/namespaces/inkscape',
-	'xmlns:pcbre': 'https://github.com/LoveMHz/xbox-board-re/namespaces/inkscape',
-	'xmlns:rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-	'xmlns:sodipodi': 'http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd',
 	'xmlns:svg': 'http://www.w3.org/2000/svg',
 	'xmlns:xlink': 'http://www.w3.org/1999/xlink'
 }
-default_layer_attrs = {
-	'inkscape:groupmode': 'layer',
-	'sodipodi': 'true', # Force layer locked by default
-}
+default_layer_attrs = { }
 
 default_trace_style = {
 	'fill': 'none', 
@@ -42,8 +33,6 @@ default_zone_style = {
 default_image_style = {
 	'style': 'display:inline'
 }
-
-default_zone_label = 'Copper Fill'
 
 def dict_to_style(dict):
 	return ';'.join("{}:{}".format(key,val) for (key,val) in dict.items())
@@ -82,8 +71,8 @@ def process_image_layer(xml, layer, new_layer):
 		new_image.setAttribute('style', dict_to_style(default_image_style))
 
 		# Add UUID if needed
-		if not new_image.getAttribute('pcbre:uuid'):
-			new_image.setAttribute('pcbre:uuid', str(uuid.uuid4()))
+		if not new_image.getAttribute('id'):
+			new_image.setAttribute('id', str(uuid.uuid4()))
 
 		# Sort attributes
 		sort_element_attr(new_image)
@@ -91,12 +80,12 @@ def process_image_layer(xml, layer, new_layer):
 		new_layer.appendChild(new_image)
 
 	# Sort elements
-	new_layer.childNodes.sort(key=lambda x: x.getAttribute('pcbre:uuid'))
+	new_layer.childNodes.sort(key=lambda x: x.getAttribute('id'))
 
 def process_zones_layer(xml, layer, new_layer):
 	zones = layer.getElementsByTagName('path')
 
-	trace_allowed_attrs = ['d', 'transform', 'inkscape:connector-curvature', 'inkscape:label', 'pcbre:uuid']
+	trace_allowed_attrs = ['d', 'transform', 'id']
 	for zone in zones:
 		new_zone = xml.createElement('path')
 
@@ -113,13 +102,9 @@ def process_zones_layer(xml, layer, new_layer):
 		# Assign default zone style
 		new_zone.setAttribute('style', dict_to_style(default_zone_style))
 
-		# Assign default zone label
-		if not new_zone.getAttribute('inkscape:label'):
-			new_zone.setAttribute('inkscape:label', default_zone_label)
-
 		# Add UUID if needed
-		if not new_zone.getAttribute('pcbre:uuid'):
-			new_zone.setAttribute('pcbre:uuid', str(uuid.uuid4()))
+		if not new_zone.getAttribute('id'):
+			new_zone.setAttribute('id', str(uuid.uuid4()))
 
 		# Sort attributes
 		sort_element_attr(new_zone)
@@ -127,12 +112,12 @@ def process_zones_layer(xml, layer, new_layer):
 		new_layer.appendChild(new_zone)
 
 	# Sort elements
-	new_layer.childNodes.sort(key=lambda x: x.getAttribute('pcbre:uuid'))
+	new_layer.childNodes.sort(key=lambda x: x.getAttribute('id'))
 
 def process_traces_layer(xml, layer, new_layer):
 	traces = layer.getElementsByTagName('path')
 
-	trace_allowed_attrs = ['d', 'inkscape:connector-curvature', 'pcbre:uuid']
+	trace_allowed_attrs = ['d', 'id']
 	for trace in traces:
 		new_trace = xml.createElement('path')
 
@@ -148,8 +133,8 @@ def process_traces_layer(xml, layer, new_layer):
 		new_trace.setAttribute('style', dict_to_style(default_trace_style))
 
 		# Add UUID if needed
-		if not new_trace.getAttribute('pcbre:uuid'):
-			new_trace.setAttribute('pcbre:uuid', str(uuid.uuid4()))
+		if not new_trace.getAttribute('id'):
+			new_trace.setAttribute('id', str(uuid.uuid4()))
 
 		# Sort attributes
 		sort_element_attr(new_trace)
@@ -157,7 +142,7 @@ def process_traces_layer(xml, layer, new_layer):
 		new_layer.appendChild(new_trace)
 
 	# Sort elements
-	new_layer.childNodes.sort(key=lambda x: x.getAttribute('pcbre:uuid'))
+	new_layer.childNodes.sort(key=lambda x: x.getAttribute('id'))
 
 def main(argv):
     # Load and parse SVG
@@ -168,18 +153,14 @@ def main(argv):
 	layers = []
 
 	for element in input_xml.getElementsByTagName('g'):
-		# Sanity check
-		if element.getAttribute('inkscape:groupmode') != 'layer':
-			raise Exception('None layer groups are not supported at this time!')
-
-		if not element.getAttribute('pcbre:uuid'):
-			print('WARNING: No UUID assigned to layer. Skipping layer', element.getAttribute('inkscape:label'))
+		if not element.getAttribute('id'):
+			print('WARNING: No id assigned to layer. Skipping layer', element.getAttribute('id'))
 			#continue
 
 		layers += [element]
 
 	# Sort layers
-	layers.sort(key=lambda x: x.getAttribute('pcbre:uuid'))
+	layers.sort(key=lambda x: x.getAttribute('id'))
 
 	# Create our 'clean' SVG object
 	clean_xml = minidom.Document()
@@ -202,9 +183,9 @@ def main(argv):
 	sort_element_attr(clean_svg)
 
 	# Process each layer
-	layer_allowed_attrs = ['inkscape:label', 'transform', 'pcbre:uuid']
+	layer_allowed_attrs = ['id', 'transform']
 	for layer in layers:
-		print('Processsing layer:', layer.getAttribute('inkscape:label'))
+		print('Processsing layer:', layer.getAttribute('id'))
 
 		# Create group element
 		new_layer = clean_xml.createElement('g')
@@ -221,19 +202,21 @@ def main(argv):
 
 			new_layer.setAttribute(svg_allowed_attr, layer.getAttribute(svg_allowed_attr))
 
-		# Add UUID if needed
-		if not element.getAttribute('pcbre:uuid'):
-			element.setAttribute('pcbre:uuid', str(uuid.uuid4()))
+		# Add ID if needed
+		if not element.getAttribute('id'):
+			element.setAttribute('id', str(uuid.uuid4()))
 
 		# Sort attributes
 		sort_element_attr(new_layer)
 
 		# Sub elements of current layer
-		if layer.getAttribute('inkscape:label') in ['Board Bottom', 'Board Top']:
+		layer_id = layer.getAttribute('id')
+		
+		if layer_id in ['bottom_board', 'top_board']:
 			process_image_layer(clean_xml, layer, new_layer)
-		elif layer.getAttribute('inkscape:label') in ['Bottom Zones', 'Top Zones']:
+		elif layer_id in ['bottom_zones', 'top_zones']:
 			process_zones_layer(clean_xml, layer, new_layer)
-		elif layer.getAttribute('inkscape:label') in ['Top Traces', 'Bottom Traces']:
+		elif layer_id in ['bottom_traces', 'top_traces']:
 			process_traces_layer(clean_xml, layer, new_layer)
 
 		#
