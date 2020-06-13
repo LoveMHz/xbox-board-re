@@ -49,29 +49,6 @@ element_group_format_rules = {
 
 default_layer_attrs = { }
 
-default_trace_style = {
-	'fill': 'none', 
-	'stroke': '#ff0000', 
-	'stroke-width': '1.25', 
-	'stroke-linecap': 'round', 
-	'stroke-linejoin': 'round', 
-	'stroke-miterlimit': '4', 
-	'stroke-dasharray': 'none', 
-	'stroke-opacity': '1'
-}
-default_zone_style = {
-	'opacity': '0.5', 
-	'fill': '#00ffff', 
-	'stroke': '#000000', 
-	'stroke-width': '0.99999994px', 
-	'stroke-linecap': 'butt', 
-	'stroke-linejoin': 'miter', 
-	'stroke-opacity': '1'
-}
-default_image_style = {
-	'style': 'display:inline'
-}
-
 def dict_to_style(dict):
 	return ';'.join("{}:{}".format(key,val) for (key,val) in dict.items())
 
