@@ -102,17 +102,17 @@ def main(argv):
 	input_svg = input_xml.getElementsByTagName('svg')[0]
 
 	# Get 'layers' from SVG
-	layers = []
+	groups = []
 
 	for element in input_xml.getElementsByTagName('g'):
 		if not element.getAttribute('id'):
-			print('WARNING: No id assigned to layer. Skipping layer', element.getAttribute('id'))
+			print('WARNING: No id assigned to object group. Skipping object group', element.getAttribute('id'))
 			#continue
 
-		layers += [element]
+		groups += [element]
 
 	# Sort layers
-	layers.sort(key=lambda x: x.getAttribute('id'))
+	groups.sort(key=lambda x: x.getAttribute('id'))
 
 	# Create our 'clean' SVG object
 	clean_xml = minidom.Document()
@@ -134,45 +134,45 @@ def main(argv):
 	# Sort attributes
 	sort_element_attr(clean_svg)
 
-	# Process each layer
+	# Process each object group
 	layer_allowed_attrs = ['id', 'transform']
-	for layer in layers:
-		print('Processsing layer:', layer.getAttribute('id'))
+	for group in groups:
+		print('Processsing layer:', group.getAttribute('id'))
 
 		# Create group element
-		new_layer = clean_xml.createElement('g')
+		new_group = clean_xml.createElement('g')
 
 		# Set default attributes
 		for layer_attr, value in default_layer_attrs.items():
-			new_layer.setAttribute(layer_attr, value)
+			new_group.setAttribute(layer_attr, value)
 
 		# Recreate each allowed attribute in the newly created element
 		for svg_allowed_attr in layer_allowed_attrs:
 			# Check if field has a value
-			if not layer.getAttribute(svg_allowed_attr):
+			if not group.getAttribute(svg_allowed_attr):
 				continue
 
-			new_layer.setAttribute(svg_allowed_attr, layer.getAttribute(svg_allowed_attr))
+			new_group.setAttribute(svg_allowed_attr, group.getAttribute(svg_allowed_attr))
 
 		# Add ID if needed
 		if not element.getAttribute('id'):
 			element.setAttribute('id', str(uuid.uuid4()))
 
 		# Sort attributes
-		sort_element_attr(new_layer)
+		sort_element_attr(new_group)
 
 		# Sub elements of current layer
-		layer_id = layer.getAttribute('id')
+		group_id = group.getAttribute('id')
 	
-		if layer_id in ['bottom_board', 'top_board']:
-			format_group_elements(clean_xml, layer, new_layer, element_group_format_rules['image'])
-		elif layer_id in ['bottom_zones', 'top_zones']:
-			format_group_elements(clean_xml, layer, new_layer, element_group_format_rules['zones'])
-		elif layer_id in ['bottom_traces', 'top_traces']:
-			format_group_elements(clean_xml, layer, new_layer, element_group_format_rules['traces'])
+		if group_id in ['bottom_board', 'top_board']:
+			format_group_elements(clean_xml, group, new_group, element_group_format_rules['image'])
+		elif group_id in ['bottom_zones', 'top_zones']:
+			format_group_elements(clean_xml, group, new_group, element_group_format_rules['zones'])
+		elif group_id in ['bottom_traces', 'top_traces']:
+			format_group_elements(clean_xml, group, new_group, element_group_format_rules['traces'])
 
 		#
-		clean_svg.appendChild(new_layer)
+		clean_svg.appendChild(new_group)
 
 	# Append SVG object to the document
 	clean_xml.appendChild(clean_svg)
