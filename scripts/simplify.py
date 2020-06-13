@@ -22,7 +22,7 @@ element_group_format_rules = {
 		'default_styles': {
 			'fill': 'none', 
 			'stroke': '#ff0000', 
-			'stroke-width': '1.25', 
+			'stroke-width': '1.25px', 
 			'stroke-linecap': 'round', 
 			'stroke-linejoin': 'round', 
 			'stroke-miterlimit': '4', 
