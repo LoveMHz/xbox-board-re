@@ -37,7 +37,7 @@ element_group_format_rules = {
 			'opacity': '0.5', 
 			'fill': '#00ffff', 
 			'stroke': '#000000', 
-			'stroke-width': '0.99999994px', 
+			'stroke-width': '1px', 
 			'stroke-linecap': 'butt', 
 			'stroke-linejoin': 'miter', 
 			'stroke-opacity': '1'
