@@ -9,6 +9,44 @@ default_svg_attrs = {
 	'xmlns:svg': 'http://www.w3.org/2000/svg',
 	'xmlns:xlink': 'http://www.w3.org/1999/xlink'
 }
+
+element_group_format_rules = {
+	'image': {
+		'default_styles': {
+			'style': 'display:inline'
+		},
+		'allowed_attrs': ['x', 'y', 'width', 'height', 'xlink:href', 'preserveAspectRatio'],
+		'element_tag': 'image'
+	},
+	'traces':{
+		'default_styles': {
+			'fill': 'none', 
+			'stroke': '#ff0000', 
+			'stroke-width': '1.25', 
+			'stroke-linecap': 'round', 
+			'stroke-linejoin': 'round', 
+			'stroke-miterlimit': '4', 
+			'stroke-dasharray': 'none', 
+			'stroke-opacity': '1'
+		},
+		'allowed_attrs': ['d', 'transform', 'id'],
+		'element_tag': 'path'
+	},
+	'zones':{
+		'default_styles': {
+			'opacity': '0.5', 
+			'fill': '#00ffff', 
+			'stroke': '#000000', 
+			'stroke-width': '0.99999994px', 
+			'stroke-linecap': 'butt', 
+			'stroke-linejoin': 'miter', 
+			'stroke-opacity': '1'
+		},
+		'allowed_attrs': ['d', 'id'],
+		'element_tag': 'path'
+	}
+}
+
 default_layer_attrs = { }
 
 default_trace_style = {
@@ -52,94 +90,31 @@ def sort_element_attr(element):
 	for name, value in attributes:
 		element.setAttribute(name, value)
 
-def process_image_layer(xml, layer, new_layer):
-	images = layer.getElementsByTagName('image')
+def format_group_elements(xml, layer, new_layer, ruleset):
+	elements = layer.getElementsByTagName(ruleset['element_tag'])
 
-	image_allowed_attrs = ['x', 'y', 'width', 'height', 'xlink:href', 'preserveAspectRatio']
-	for image in images:
-		new_image = xml.createElement('image')
-
-		# Recreate each allowed attribute in the newly created element
-		for allowed_attr in image_allowed_attrs:
-			# Check if field has a value
-			if not image.getAttribute(allowed_attr):
-				continue
-
-			new_image.setAttribute(allowed_attr, image.getAttribute(allowed_attr))
-
-		# Assign default image style
-		new_image.setAttribute('style', dict_to_style(default_image_style))
-
-		# Add UUID if needed
-		if not new_image.getAttribute('id'):
-			new_image.setAttribute('id', str(uuid.uuid4()))
-
-		# Sort attributes
-		sort_element_attr(new_image)
-
-		new_layer.appendChild(new_image)
-
-	# Sort elements
-	new_layer.childNodes.sort(key=lambda x: x.getAttribute('id'))
-
-def process_zones_layer(xml, layer, new_layer):
-	zones = layer.getElementsByTagName('path')
-
-	trace_allowed_attrs = ['d', 'transform', 'id']
-	for zone in zones:
-		new_zone = xml.createElement('path')
+	for element in elements:
+		new_element = xml.createElement(ruleset['element_tag'])
 
 		# Recreate each allowed attribute in the newly created element
-		for allowed_attr in trace_allowed_attrs:
+		for allowed_attr in ruleset['allowed_attrs']:
 			# Check if field has a value
-			if not zone.getAttribute(allowed_attr):
+			if not element.getAttribute(allowed_attr):
 				continue
 
-			new_zone.setAttribute(allowed_attr, zone.getAttribute(allowed_attr))
-
-		# TODO: Remove transforms
-
-		# Assign default zone style
-		new_zone.setAttribute('style', dict_to_style(default_zone_style))
-
-		# Add UUID if needed
-		if not new_zone.getAttribute('id'):
-			new_zone.setAttribute('id', str(uuid.uuid4()))
-
-		# Sort attributes
-		sort_element_attr(new_zone)
-
-		new_layer.appendChild(new_zone)
-
-	# Sort elements
-	new_layer.childNodes.sort(key=lambda x: x.getAttribute('id'))
-
-def process_traces_layer(xml, layer, new_layer):
-	traces = layer.getElementsByTagName('path')
-
-	trace_allowed_attrs = ['d', 'id']
-	for trace in traces:
-		new_trace = xml.createElement('path')
-
-		# Recreate each allowed attribute in the newly created element
-		for allowed_attr in trace_allowed_attrs:
-			# Check if field has a value
-			if not trace.getAttribute(allowed_attr):
-				continue
-
-			new_trace.setAttribute(allowed_attr, trace.getAttribute(allowed_attr))
+			new_element.setAttribute(allowed_attr, element.getAttribute(allowed_attr))
 
 		# Assign default trace style
-		new_trace.setAttribute('style', dict_to_style(default_trace_style))
+		new_element.setAttribute('style', dict_to_style(default_trace_style))
 
 		# Add UUID if needed
-		if not new_trace.getAttribute('id'):
-			new_trace.setAttribute('id', str(uuid.uuid4()))
+		if not new_element.getAttribute('id'):
+			new_element.setAttribute('id', str(uuid.uuid4()))
 
 		# Sort attributes
-		sort_element_attr(new_trace)
+		sort_element_attr(new_element)
 
-		new_layer.appendChild(new_trace)
+		new_layer.appendChild(new_element)
 
 	# Sort elements
 	new_layer.childNodes.sort(key=lambda x: x.getAttribute('id'))
@@ -211,13 +186,13 @@ def main(argv):
 
 		# Sub elements of current layer
 		layer_id = layer.getAttribute('id')
-		
+	
 		if layer_id in ['bottom_board', 'top_board']:
-			process_image_layer(clean_xml, layer, new_layer)
+			format_group_elements(clean_xml, layer, new_layer, element_group_format_rules['image'])
 		elif layer_id in ['bottom_zones', 'top_zones']:
-			process_zones_layer(clean_xml, layer, new_layer)
+			format_group_elements(clean_xml, layer, new_layer, element_group_format_rules['zones'])
 		elif layer_id in ['bottom_traces', 'top_traces']:
-			process_traces_layer(clean_xml, layer, new_layer)
+			format_group_elements(clean_xml, layer, new_layer, element_group_format_rules['traces'])
 
 		#
 		clean_svg.appendChild(new_layer)
