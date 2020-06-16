@@ -3,6 +3,7 @@
 import sys
 import getopt
 import shapely.geometry
+from shapely.ops import nearest_points as shapely_nearest_points
 from svg.path import parse_path as parse_svg_path
 from svg.path import Path as SvgPath
 from svg.path import Move as SvgMove
@@ -125,13 +126,23 @@ def compare(old_polygons, new_polygons):
 		print('Processing SVG child elements:', new_element_id)
 
 		overlaps = {}
+		nearest_markers = {}
 
-		polygon = new_polygon
 		for old_element_id, old_polygon in old_polygons.items():
 
+			#FIXME: We don't need the actual intersection, but just if it's too close.
+			#       So if we the bounding boxes aren't close enough to be a problem, then we already don't care.
+			#FIXME: Retrieving bounds is slow, so we should cache them?
 			if not new_polygon.intersects(old_polygon):
-				#FIXME: Get distance to check if someone might have left an accidental gap, or moved too close
-				pass
+				# Get distance to check if someone might have left an accidental gap, or moved too close.
+				#FIXME: This step appears to be slow, so we should make this optional?
+				if False:
+					threshold = stroke_width * 1.5
+					if new_polygon.distance(old_polygon) <= threshold:
+						print("error: Small distance, but not touching")
+						old_point, new_point = shapely_nearest_points(old_polygon, new_polygon)
+						
+						nearest_markers[old_element_id] = shapely.geometry.LineString([old_point, new_point]).buffer(stroke_width)
 			else:
 				# Reject, if this is the exact same shape
 				if new_polygon.equals(old_polygon): #FIXME: almost_equals?
@@ -168,13 +179,19 @@ def compare(old_polygons, new_polygons):
 			if new_element_id not in duplicate:
 				added.append(new_element_id)
 
-		#FIXME: This exports the path and its overlap
-		if len(overlaps) > 0:
+		# This exports the path and its overlap
+		#FIXME: Remove; this is mostly for debugging and should be constructed from return values of this function
+		if (len(overlaps) > 0) or (len(nearest_markers) > 0):
 			diff_xml = minidom.Document()
 			diff_svg = diff_xml.createElement("svg")
 			diff_svg.setAttribute("viewBox", viewBox)
 			diff_xml.appendChild(diff_svg)
 
+			for old_element_id, nearest_marker in nearest_markers.items():
+				#FIXME: This should export a stroked path, not a filled polygon
+				append_svg_polygons(diff_xml, diff_svg, {"%s-closest-%s" % (new_element_id, old_element_id): nearest_marker}, "fill:#ff00ff;stroke:none") #"fill:none;stroke:#ff00ff;stroke-width:3.0")
+			for old_element_id in nearest_markers:
+				append_svg_polygons(diff_xml, diff_svg, {"%s-near-%s" % (new_element_id, old_element_id): old_polygons[old_element_id]}, "fill:#aaaaaa;stroke:none")
 			append_svg_polygons(diff_xml, diff_svg, {new_element_id: new_polygon}, "fill:#008800;stroke:none")
 			for overlap_id, overlap_polygons in overlaps.items():
 				append_svg_polygons(diff_xml, diff_svg, {new_element_id + "-diff-%s-original" % overlap_id: old_polygons[overlap_id]}, "fill:#ff0000;stroke:none")
