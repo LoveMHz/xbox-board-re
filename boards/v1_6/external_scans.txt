@@ -1,0 +1,3 @@
+# Add better board scans of rev 1.6
+# Scanned board images and warped corrected to match the sickmods' scans.
+https://drive.google.com/drive/folders/1ua9u7fNn69Gw90XfutP7uah-LFDFszmB?usp=sharing
