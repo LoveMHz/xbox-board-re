@@ -22,7 +22,7 @@ element_format_rules = {
 		'default_styles': {
 			'style': 'display:inline'
 		},
-		'allowed_attrs': ['x', 'y', 'width', 'height', 'xlink:href', 'preserveAspectRatio'],
+		'allowed_attrs': ['x', 'y', 'width', 'height', 'xlink:href', 'preserveAspectRatio', 'id'],
 		'element_tag': 'image',
 		'id_subfix': 'image_'
 	},
